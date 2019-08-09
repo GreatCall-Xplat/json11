@@ -37,20 +37,11 @@ using std::make_shared;
 using std::initializer_list;
 using std::move;
 
-/* Helper for representing null - just a do-nothing struct, plus comparison
- * operators so the helpers in JsonValue work. We can't use nullptr_t because
- * it may not be orderable.
- */
-struct NullStruct {
-    bool operator==(NullStruct) const { return true; }
-    bool operator<(NullStruct) const { return false; }
-};
-
 /* * * * * * * * * * * * * * * * * * * *
  * Serialization
  */
 
-static void dump(NullStruct, string &out) {
+static void dump(std::nullptr_t, string &out) {
     out += "null";
 }
 
@@ -217,9 +208,9 @@ public:
     explicit JsonObject(Json::object &&value)      : Value(move(value)) {}
 };
 
-class JsonNull final : public Value<Json::NUL, NullStruct> {
+class JsonNull final : public Value<Json::NUL, std::nullptr_t> {
 public:
-    JsonNull() : Value({}) {}
+    JsonNull() : Value(nullptr) {}
 };
 
 /* * * * * * * * * * * * * * * * * * * *
